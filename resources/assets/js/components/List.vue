@@ -14,9 +14,9 @@
                 </th>
             </tr>
             <tr>
-                <th>Name</th>
-                <th>URL</th>
-                <th>Date created</th>
+                <th @click="sort('name')">Name <span>▼▲</span></th>
+                <th @click="sort('url')">URL <span>▼▲</span></th>
+                <th @click="sort('created_at')">Date created <span>▼▲</span></th>
             </tr>
             <tr v-for="web in filteredList" :key="web.id">
                 <td>{{ web.name }}</td>
@@ -38,6 +38,10 @@
                 websites: [],
                 nameText: '',
                 dateText: '',
+                nameOrder: false,
+                urlOrder: false,
+                dateOrder: false,
+                sorted: false,
             }
         },
         computed: {
@@ -62,6 +66,109 @@
                     console.log(error);
                 }
             },
+
+            sort(type) {
+                
+                if (type == 'name') {
+                    if (this.nameOrder == false) {
+                        this.nameOrder = true;
+                        this.websites.sort(this.compareNamesR);
+                    } else {
+                        this.nameOrder = false;
+                        this.websites.sort(this.compareNames); 
+                    }
+                }else if ( type == 'url') {
+                    if (this.urlOrder == false) {
+                        this.urlOrder = true;
+                        this.websites.sort(this.compareWebs);
+                    } else {
+                        this.urlOrder = false;
+                        this.websites.sort(this.compareWebsR);
+                    }
+                }else if ( type == 'created_at' ) {
+                    if (this.dateOrder == false) {
+                        this.dateOrder = true;
+                        this.websites.sort(this.compareDates);
+                    } else {
+                        this.dateOrder = false;
+                        this.websites.sort(this.compareDatesR);
+                    }
+                }
+            },
+
+            compareNames(a, b) {
+                const webA = a.name.toUpperCase();
+                const webB = b.name.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison;
+            },
+            compareWebs(a, b) {
+                const webA = a.url.toUpperCase();
+                const webB = b.url.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison;
+            },
+            compareDates(a, b) {
+                const webA = a.created_at.toUpperCase();
+                const webB = b.created_at.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison;
+            },
+
+            compareNamesR(a, b) {
+                const webA = a.name.toUpperCase();
+                const webB = b.name.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison * -1;
+            },
+            compareWebsR(a, b) {
+                const webA = a.url.toUpperCase();
+                const webB = b.url.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison * -1;
+            },
+            compareDatesR(a, b) {
+                const webA = a.created_at.toUpperCase();
+                const webB = b.created_at.toUpperCase();
+
+                let comparison = 0;
+                if (webA > webB) {
+                    comparison = 1;
+                } else if (webA < webB) {
+                    comparison = -1;
+                }
+                return comparison * -1;
+            }
         },
         beforeMount() {
             this.getSites();
@@ -69,3 +176,9 @@
 
     }
 </script>
+
+<style scoped>
+    th {
+        cursor: pointer;
+    }
+</style>
